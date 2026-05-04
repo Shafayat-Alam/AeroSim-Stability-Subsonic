@@ -107,6 +107,7 @@ The simulation captures non-linear coupling effects between axial and lateral fl
 ---
 
 ## 9. References
+*   **Whitehead, J. C. (LLNL).** *How Small Can a Launch Vehicle Be?*
 *   **Finch & Matranga (1959).** *NASA TM X-195: Launch Characteristics of the X-15.*
 *   **Negandhi, R. (2025).** *Aerodynamic Modeling for Thrust Vector Control.*
 *   **Stern, F. (1999).** *Verification and Validation of CFD Simulations.*
