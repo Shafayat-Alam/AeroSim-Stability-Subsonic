@@ -1,0 +1,120 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2412                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     rhoSimpleFoam;
+
+startFrom       latestTime;
+
+startTime       startFrom;
+
+stopAt          endTime;
+
+endTime         2500;
+
+deltaT          1;
+
+writeControl    timeStep;
+
+writeInterval   50;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  16;
+
+writeCompression on;
+
+timeFormat      general;
+
+timePrecision   16;
+
+runTimeModifiable true;
+
+functions
+{
+    residuals
+    {
+        type            solverInfo;
+        libs            ("libutilityFunctionObjects.so");
+        fields          (p U h T nuTilda alphat nut); 
+        writeControl    timeStep;
+        writeInterval   1;
+        log             true;
+    }
+
+    yPlus
+    {
+        type            yPlus;
+        libs            ("libutilityFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        log             true;
+    }
+
+    /*
+    writeFields
+    {
+        type            writeObjects;
+        libs            (utilityFunctionObjects);
+        objects         (p U h T nuTilda alphat nut); 
+        writeControl    timeStep;
+        writeInterval   1;
+    }
+
+    fieldMonitoring
+    {
+        type            fieldMinMax;
+        libs            (fieldFunctionObjects);
+        fields          (p U h T nuTilda alphat nut);
+        log             true; 
+    }
+    */
+
+    forceCoeffs
+    {
+        type            forceCoeffs;
+        libs            ("libforces.so");
+        
+        patches         (Mars); 
+
+        // ISA values at 1000 ft 
+        rhoInf          1.190; 
+        rho             rho;      
+        
+        // Mach 0.7 at 1000 ft ISA
+        magUInf         237.4; 
+
+        // Reference dimensions from Mars Rover 2 specs
+        lRef            2.0097;  // Length: 79.125 in converted to meters
+        Aref            0.01865; // Area based on 6.08 in diameter
+
+        // Direction vectors for 3D sweep
+        dragDir         (1 0 0);  // Axial
+        liftDir         (0 0 1);  // Vertical (Z)
+        pitchAxis       (0 1 0);  // Rotation axis (Y)
+        
+        // Center of Rotation (CG)
+        // 45.3343 in converted to meters
+        CofR            (1.1515 0 0); 
+
+        writeControl    timeStep;
+        writeInterval   1;
+        log             true; 
+    }
+}
+
+// ************************************************************************* //

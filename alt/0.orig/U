@@ -1,0 +1,56 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2412                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+aoa             10;             // alpha (Angle of Attack) in degrees
+sideslip        5;              // beta (Sideslip Angle) in degrees
+magU            237.4;          // Total velocity magnitude (Mach 0.7)
+
+// 3D Vector Decomposition Calculations 
+degToRad        #eval{ 3.14159265 / 180.0 };
+Ux              #eval{ $magU * cos($aoa * $degToRad) * cos($sideslip * $degToRad) };
+Uy              #eval{ $magU * sin($sideslip * $degToRad) };
+Uz              #eval{ $magU * sin($aoa * $degToRad) * cos($sideslip * $degToRad) };
+// ----------------------------------
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform ($Ux $Uy $Uz);
+
+boundaryField
+{
+    inlet
+    {
+        type            fixedValue;
+        value           uniform ($Ux $Uy $Uz);
+    }
+
+    outlet
+    {
+        type            zeroGradient;[cite: 6]
+    }
+
+    walls
+    {
+        type            slip;[cite: 6]
+    }
+
+    Alt
+    {
+        type            noSlip;[cite: 6]
+    }
+}
+
+// ************************************************************************* //
